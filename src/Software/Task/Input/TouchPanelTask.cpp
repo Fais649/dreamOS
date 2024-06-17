@@ -1,7 +1,7 @@
 #include "TouchPanelTask.h"
 
 TouchPanelTask::TouchPanelTask()
-    : TaskClass("TouchPanelTask", 10, 5000, 0) {}
+    : TaskClass("TouchPanelTask", 20, 5000, 0) {}
 
 void TouchPanelTask::taskFunction()
 {
@@ -13,6 +13,6 @@ void TouchPanelTask::taskFunction()
             Serial.println(touchPanel.readFingerX(0));
             Serial.println(touchPanel.readFingerY(0));
         }
-        vTaskDelay(10 / portTICK_PERIOD_MS);
+        vTaskDelay(20 / portTICK_PERIOD_MS);
     }
 }

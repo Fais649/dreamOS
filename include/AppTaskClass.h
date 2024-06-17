@@ -8,15 +8,41 @@ class AppTaskClass : public TaskClass
 {
 public:
     AppTaskClass(const char *name, UBaseType_t priority, uint32_t stackSize, uint8_t taskCore);
-    void start() override
+    virtual void start()
     {
         initDisplay();
+        setCanvas();
         TaskClass::start();
-        setCurrentApp(taskName);
+    }
+
+    virtual void stop()
+    {
+        if (taskHandle != nullptr)
+        {
+            save();
+        }
+        TaskClass::stop();
+    };
+
+    virtual void setCanvas() = 0;
+
+    void drawLoading()
+    {
+        display.getCanvas().deleteCanvas();
+        display.createCanvas(160, 30);
+        display.clear();
+        display.setTextSize(3);
+        display.drawString("**tick**", 0, 0);
+        display.pushCanvas(420, 0, UPDATE_MODE_DU4);
+        display.getCanvas().deleteCanvas();
     }
 
 protected:
-    virtual void taskFunction() = 0;
+    virtual void
+    taskFunction() = 0;
+
+    virtual void save() {};
+
     virtual void initDisplay()
     {
         display.getCanvas().deleteCanvas();
@@ -63,6 +89,8 @@ protected:
     };
 
     virtual void updateDisplay() = 0;
+
+private:
 };
 
 #endif // TASKCLASS_H

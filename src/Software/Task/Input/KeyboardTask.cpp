@@ -1,7 +1,7 @@
 #include "KeyboardTask.h"
 
 KeyboardTask::KeyboardTask()
-    : TaskClass("KeyboardTask", 10, 5000, 0) {}
+    : TaskClass("KeyboardTask", 20, 5000, 0) {}
 
 void KeyboardTask::taskFunction()
 {
@@ -12,6 +12,6 @@ void KeyboardTask::taskFunction()
         {
             textInputBuffer.addChar(keyboard.getChar());
         }
-        vTaskDelay(10 / portTICK_PERIOD_MS);
+        vTaskDelay(20 / portTICK_PERIOD_MS);
     }
 }

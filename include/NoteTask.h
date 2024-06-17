@@ -12,6 +12,7 @@ public:
 protected:
     void taskFunction() override;
     void updateDisplay() override;
+    void setCanvas() override;
 };
 
 #endif

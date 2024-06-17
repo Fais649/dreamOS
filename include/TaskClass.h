@@ -3,7 +3,6 @@
 
 #include "Hardware.h"
 #include "Globals.h"
-#include "AppTracker.h"
 
 class TaskClass
 {
@@ -27,13 +26,13 @@ public:
 
     static void taskFunctionWrapper(void *parameter);
     TaskHandle_t getHandle() { return taskHandle; }
-
+    const char (*getTaskName()){ return taskName; }
 protected:
     virtual void taskFunction() = 0;
     const char *taskName;
+    TaskHandle_t taskHandle;
 
 private:
-    TaskHandle_t taskHandle;
     UBaseType_t taskPriority;
     uint32_t taskStackSize;
     uint8_t taskCore;

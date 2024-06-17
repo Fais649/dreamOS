@@ -1,14 +1,63 @@
 #include "TaskList.h"
 
-TaskList::TaskList()
+TaskList::TaskList(
+    int listPosX,
+    int listPosY,
+    int maxRows,
+    int maxCols,
+    int textHeight,
+    int textWidth,
+    int fontSize,
+    int fontNumber,
+    int rowWidth,
+    int rowHeight,
+    ListType type) : _listPosX(listPosX),
+                     _listPosY(listPosY),
+                     _maxRows(maxRows),
+                     _maxCols(maxCols),
+                     _textWidth(textWidth),
+                     _textHeight(textHeight),
+                     _fontSize(fontSize),
+                     _fontNumber(fontNumber),
+                     _rowWidth(rowWidth),
+                     _rowHeight(rowHeight),
+                     _type(type)
 {
-    _maxRows = TASK_LIST_MAX_ROWS;
-    _maxCols = TASK_LIST_MAX_COLS;
+    _charMatrix = new char *[_maxRows];
+    for (int i = 0; i < _maxRows; i++)
+    {
+        _charMatrix[i] = new char[_maxCols + 1];
+        memset(_charMatrix[i], 0, _maxCols + 1);
+    }
+}
+
+TaskList::~TaskList()
+{
+    for (int i = 0; i < _maxRows; i++)
+    {
+        delete[] _charMatrix[i];
+    }
+    delete[] _charMatrix;
 }
 
 char *TaskList::getListRow(int posY)
 {
     return _charMatrix[posY];
+}
+
+String TaskList::getActiveRow()
+{
+    return String(_charMatrix[_cursorPosY]);
+}
+
+int TaskList::getActiveRowNum()
+{
+    return _cursorPosY;
+}
+
+int TaskList::getActiveColNum()
+{
+    return _cursorPosX;
 }
 
 void TaskList::handleInput(char input)
@@ -42,6 +91,14 @@ void TaskList::handleInput(char input)
     {
         handleDown();
     }
+
+    // draw();
+}
+
+void TaskList::draw()
+{
+    // display.clear();
+    // display.drawString(_cursorChar)
 }
 
 void TaskList::handleNewChar()
@@ -138,7 +195,21 @@ void TaskList::cursorBlinkChar()
 
 void TaskList::updateCharAtCurrPos()
 {
+    display.getCanvas().deleteCanvas();
+    display.createCanvas(_textWidth, _textHeight);
     _charMatrix[_cursorPosY][_cursorPosX] = _cursorChar;
+    display.drawString(String(_cursorChar), 0, 0);
+    display.pushCanvas(calcPosX(), calcPosY(), UPDATE_MODE_DU4);
+}
+
+void TaskList::calcPosX()
+{
+    return _listPosX + (_textWidth * _cursorPosX);
+}
+
+void TaskList::calcPosY()
+{
+        return _listPosY + (_textHeight * _cursorPosY);
 }
 
 void TaskList::addNullTerminator(int xOffset)
@@ -148,7 +219,8 @@ void TaskList::addNullTerminator(int xOffset)
 
 void TaskList::cursorRight()
 {
-    if (_cursorPosX < _maxCols) {
+    if (_cursorPosX < _maxCols)
+    {
         _cursorPosX++;
     }
 }
@@ -239,13 +311,13 @@ bool TaskList::isNewRight()
 
 void TaskList::handleTextInputBuffer(const char buffer[BUFFER_SIZE])
 {
+    Serial.println("HandleTextBuffer");
     for (int i = 0; i < BUFFER_SIZE; i++)
     {
         if (buffer[i] == '\0')
         {
             break;
         }
-        Serial.println("handlingbuffer");
         handleInput(buffer[i]);
     }
 }
@@ -254,5 +326,3 @@ bool TaskList::isBufferChange()
 {
     return _bufferChange;
 }
-
-TaskList taskList;

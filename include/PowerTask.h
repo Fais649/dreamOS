@@ -3,6 +3,8 @@
 
 #include "TaskClass.h"
 #include "Tasks.h"
+#include "AppTaskClass.h"
+#include "AppSwitcherTask.h"
 
 class PowerTask : public TaskClass
 {
@@ -11,9 +13,6 @@ public:
 
 protected:
     void taskFunction() override;
-
-private:
-    void drawLogo();
 };
 
 extern PowerTask powerTask;

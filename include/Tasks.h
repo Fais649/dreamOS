@@ -2,14 +2,12 @@
 #define TASKS_H
 
 #include "PowerTask.h" 
-#include "AppSwitcherTask.h" 
 
 #include "KeyboardTask.h" 
 #include "TouchPanelTask.h" 
 
 #include "TodoTask.h" 
 #include "NoteTask.h" 
-
 
 extern KeyboardTask keyboardTask;
 extern TouchPanelTask touchPanelTask;

@@ -7,12 +7,35 @@
 #include "TextInputBuffer.h"
 #include "Hardware.h"
 
+enum class ListType
+{
+    TYPE_CHECKLIST = 0,
+    TYPE_BULLETED,
+    TYPE_NUMBERED,
+    TYPE_FREE
+};
+
 class TaskList
 {
 public:
-    TaskList();
+    TaskList(
+        int listPosX,
+        int listPosY,
+        int maxRows,
+        int maxCols,
+        int textHeight,
+        int textWidth,
+        int fontSize,
+        int fontNumber,
+        int rowWidth,
+        int rowHeight,
+        ListType type = ListType::TYPE_FREE);
+
+    ~TaskList();
     char *getListRow(int posY);
-    char (&getList())[TASK_LIST_MAX_ROWS][TASK_LIST_MAX_COLS] { return _charMatrix; };
+    String getActiveRow();
+    int getActiveRowNum();
+    int getActiveColNum();
     void handleReset();
     void handleTextInputBuffer(const char buffer[BUFFER_SIZE]);
     bool isBufferChange();
@@ -20,12 +43,21 @@ public:
 
 private:
     void handleInput(char input);
+    ListType _type = ListType::TYPE_FREE;
+    int _listPosX;
+    int _listPosY;
     int _maxRows;
     int _maxCols;
+    int _textHeight;
+    int _textWidth;
+    int _fontSize;
+    int _fontNumber;
+    int _rowWidth;
+    int _rowHeight;
 
     bool _bufferChange = false;
 
-    char _charMatrix[TASK_LIST_MAX_ROWS][TASK_LIST_MAX_COLS];
+    char **_charMatrix;
     int _cursorPosY = 0;
     int _cursorPosX = 0;
     int _cursorBlinkChar = '_';
@@ -63,8 +95,9 @@ private:
     void handleTab();
     void handleUp();
     void handleDown();
-};
 
-extern TaskList taskList;
+    int calcPosX();
+    void calcPosY();
+};
 
 #endif
