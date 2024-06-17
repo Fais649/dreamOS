@@ -3,31 +3,54 @@
 
 void setup()
 {
+  initHardware();
+  initUtils();
+  initStart();
+  initManagers();
+}
+
+void initHardware()
+{
   power.begin();
+  Serial.println("Power initialized!");
   delay(200);
   ports.begin();
+  Serial.println("Ports initialized!");
   delay(200);
   display.begin();
+  Serial.println("Display initialized!");
   delay(200);
   touchPanel.begin(21, 22, 36);
+  Serial.println("TouchPanel initialized!");
   delay(200);
-  // sdCard.begin();
-
- battery.begin();
-  Serial.println("Battery: " + String(battery.getBatteryPercentage()));
-
+  battery.begin();
+  Serial.println("Battery intialized: " + String(battery.getBatteryPercentage()));
   rclock.begin();
-  Serial.println("clock");
+  Serial.println("Clock initialized!");
+  // sdCard.begin();
+}
 
-  touchPanelTask.start();
-  Serial.println("TP");
-  keyboardTask.start();
-  Serial.println("Keyboard");
+void initStart()
+{
   todoTask.start();
-  Serial.println("todo");
-  // noteTask.start();
-  Serial.println("note");
+  delay(200);
+  Serial.println("Start App initialized!");
+}
+
+void initUtils()
+{
+  touchPanelTask.start();
+  Serial.println("TouchPanel Task initialized!");
+  delay(200);
+  keyboardTask.start();
+  delay(200);
+  Serial.println("Keyboard Task initialized!");
+}
+
+void initManagers()
+{
   appSwitcherTask.start();
+   delay(200);
   powerTask.start();
 }
 
