@@ -11,7 +11,6 @@ public:
     virtual void start()
     {
         initDisplay();
-        setCanvas();
         TaskClass::start();
     }
 
@@ -24,17 +23,15 @@ public:
         TaskClass::stop();
     };
 
-    virtual void setCanvas() = 0;
 
     void drawLoading()
     {
         display.getCanvas().deleteCanvas();
-        display.createCanvas(160, 30);
+        display.createCanvas(60, 20);
         display.clear();
-        display.setTextSize(3);
-        display.drawString("**tick**", 0, 0);
-        display.pushCanvas(420, 0, UPDATE_MODE_DU4);
-        display.getCanvas().deleteCanvas();
+        display.setTextSize(2);
+        display.drawString("****", 0, 0);
+        display.pushCanvas(480, 10, UPDATE_MODE_DU4);
     }
 
 protected:

@@ -5,12 +5,10 @@ TaskList::TaskList(
     int listPosY,
     int maxRows,
     int maxCols,
-    int textHeight,
     int textWidth,
+    int textHeight,
     int fontSize,
     int fontNumber,
-    int rowWidth,
-    int rowHeight,
     ListType type) : _listPosX(listPosX),
                      _listPosY(listPosY),
                      _maxRows(maxRows),
@@ -19,16 +17,17 @@ TaskList::TaskList(
                      _textHeight(textHeight),
                      _fontSize(fontSize),
                      _fontNumber(fontNumber),
-                     _rowWidth(rowWidth),
-                     _rowHeight(rowHeight),
                      _type(type)
 {
+    // display.getCanvas().setTextFont(_fontNumber);
+    display.getCanvas().setTextSize(_fontSize);
     _charMatrix = new char *[_maxRows];
     for (int i = 0; i < _maxRows; i++)
     {
         _charMatrix[i] = new char[_maxCols + 1];
         memset(_charMatrix[i], 0, _maxCols + 1);
     }
+    _cursorChar = _charMatrix[_cursorPosY][_cursorPosX];
 }
 
 TaskList::~TaskList()
@@ -91,8 +90,7 @@ void TaskList::handleInput(char input)
     {
         handleDown();
     }
-
-    // draw();
+    vTaskDelay(1 / portTICK_PERIOD_MS);
 }
 
 void TaskList::draw()
@@ -117,6 +115,11 @@ void TaskList::handleBackspace()
 {
     if (_cursorPosX > 0)
     {
+        display.getCanvas().deleteCanvas();
+        display.createCanvas(_textWidth, _textHeight);
+        display.clear();
+        display.pushCanvas(calcPosX(), calcPosY(), UPDATE_MODE_DU4);
+        
         cursorLeft();
         cursorBlinkChar();
         addNullTerminator(1);
@@ -127,9 +130,21 @@ void TaskList::handleEnter()
 {
     if (_cursorPosY < _maxRows)
     {
+        _currentMaxRow++;
+        display.getCanvas().deleteCanvas();
+        display.createCanvas(_textWidth, _textHeight);
+        display.clear();
+        display.pushCanvas(calcPosX(), calcPosY(), UPDATE_MODE_DU4);
+
         addNullTerminator(0);
         cursorDown();
         cursorResetX();
+
+        display.getCanvas().deleteCanvas();
+        display.createCanvas((_maxCols - 1) * _textWidth, _textHeight);
+        display.clear();
+        display.pushCanvas(_listPosX, calcPosY(), UPDATE_MODE_DU4);
+        
         cursorBlinkChar();
         addNullTerminator(1);
     }
@@ -144,6 +159,10 @@ void TaskList::handleEsc()
 {
     if (_cursorPosX > 0)
     {
+        display.getCanvas().deleteCanvas();
+        display.createCanvas((_maxCols - 1) * _textWidth, _textHeight);
+        display.clear();
+        display.pushCanvas(_listPosX, calcPosY(), UPDATE_MODE_DU4);
         cursorResetX();
         cursorBlinkChar();
         addNullTerminator(1);
@@ -176,6 +195,10 @@ void TaskList::handleDown()
 
 void TaskList::handleReset()
 {
+    display.getCanvas().deleteCanvas();
+    display.createCanvas(_maxCols * _textWidth, _maxRows * _textHeight);
+    display.clear();
+    display.pushCanvas(_listPosX, _listPosY, UPDATE_MODE_DU4);
     memset(_charMatrix, 0, sizeof(_charMatrix));
     cursorResetX();
     cursorResetY();
@@ -191,25 +214,31 @@ void TaskList::updateCursorChar()
 void TaskList::cursorBlinkChar()
 {
     _charMatrix[_cursorPosY][_cursorPosX] = _cursorBlinkChar;
+    display.getCanvas().deleteCanvas();
+    display.createCanvas(_textWidth, _textHeight);
+    display.clear();
+    display.drawChar(_cursorBlinkChar, 0, 0);
+    display.pushCanvas(calcPosX(), calcPosY(), UPDATE_MODE_DU4);
 }
 
 void TaskList::updateCharAtCurrPos()
 {
+    _charMatrix[_cursorPosY][_cursorPosX] = _cursorChar;
     display.getCanvas().deleteCanvas();
     display.createCanvas(_textWidth, _textHeight);
-    _charMatrix[_cursorPosY][_cursorPosX] = _cursorChar;
-    display.drawString(String(_cursorChar), 0, 0);
+    display.clear();
+    display.drawChar(_cursorChar, 0, 0);
     display.pushCanvas(calcPosX(), calcPosY(), UPDATE_MODE_DU4);
 }
 
-void TaskList::calcPosX()
+int TaskList::calcPosX()
 {
     return _listPosX + (_textWidth * _cursorPosX);
 }
 
-void TaskList::calcPosY()
+int TaskList::calcPosY()
 {
-        return _listPosY + (_textHeight * _cursorPosY);
+    return _listPosY + (_textHeight * _cursorPosY);
 }
 
 void TaskList::addNullTerminator(int xOffset)
@@ -237,6 +266,10 @@ void TaskList::cursorDown()
 {
     if (_cursorPosY < _maxRows - 1)
     {
+        display.getCanvas().deleteCanvas();
+        display.createCanvas(_textWidth, _textHeight);
+        display.clear();
+        display.pushCanvas(calcPosX(), calcPosY(), UPDATE_MODE_DU4);
         _cursorPosY++;
     }
 }
@@ -245,6 +278,10 @@ void TaskList::cursorUp()
 {
     if (_cursorPosY > 0)
     {
+        display.getCanvas().deleteCanvas();
+        display.createCanvas(_textWidth, _textHeight);
+        display.clear();
+        display.pushCanvas(calcPosX(), calcPosY(), UPDATE_MODE_DU4);
         _cursorPosY--;
     }
 }

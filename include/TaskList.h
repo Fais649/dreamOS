@@ -9,7 +9,7 @@
 
 enum class ListType
 {
-    TYPE_CHECKLIST = 0,
+    TYPE_CHECKLIST,
     TYPE_BULLETED,
     TYPE_NUMBERED,
     TYPE_FREE
@@ -23,14 +23,11 @@ public:
         int listPosY,
         int maxRows,
         int maxCols,
-        int textHeight,
         int textWidth,
+        int textHeight,
         int fontSize,
         int fontNumber,
-        int rowWidth,
-        int rowHeight,
         ListType type = ListType::TYPE_FREE);
-
     ~TaskList();
     char *getListRow(int posY);
     String getActiveRow();
@@ -55,13 +52,15 @@ private:
     int _rowWidth;
     int _rowHeight;
 
+    int _currentMaxRow = 0;
+
     bool _bufferChange = false;
 
     char **_charMatrix;
     int _cursorPosY = 0;
     int _cursorPosX = 0;
     int _cursorBlinkChar = '_';
-    int _cursorChar = _charMatrix[_cursorPosY][_cursorPosX];
+    int _cursorChar;
 
     char _input;
     void cursorRight();
@@ -97,7 +96,7 @@ private:
     void handleDown();
 
     int calcPosX();
-    void calcPosY();
+    int calcPosY();
 };
 
 #endif

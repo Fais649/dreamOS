@@ -33,6 +33,7 @@ public:
     void setTextFont(uint8_t font);
     void setTextSize(uint32_t size);
     void setTextColor(uint8_t color);
+    int16_t drawChar(int input, int32_t poX, int32_t poY);
     int16_t drawString(const String &string, int32_t poX, int32_t poY);
     void drawList(int32_t startX, int32_t startY, int32_t charWidth, int32_t charHeight, const char list[][TASK_LIST_MAX_COLS], int32_t rows, int32_t cols);
     void drawBitmap(int32_t x, int32_t y, const uint8_t *bitmap, int32_t w, int32_t h);

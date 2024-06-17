@@ -141,6 +141,14 @@ void Display::fillCanvas(uint32_t color)
     xSemaphoreGive(mutex);
 }
 
+int16_t Display::drawChar(int input, int32_t poX, int32_t poY)
+{
+    xSemaphoreTake(mutex, portMAX_DELAY);
+    int16_t result = canvas.drawChar(input, poX, poY);
+    xSemaphoreGive(mutex);
+    return result;
+}
+
 int16_t Display::drawString(const String &string, int32_t poX, int32_t poY)
 {
     xSemaphoreTake(mutex, portMAX_DELAY);

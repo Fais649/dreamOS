@@ -7,10 +7,12 @@ class TodoTask : public AppTaskClass
 {
 public:
     TodoTask();
+    void start() override;
+    void stop() override;
+
 protected:
     void taskFunction() override;
     void updateDisplay() override;
-    void setCanvas() override;
 };
 
 #endif
